@@ -29,8 +29,10 @@ jobs:
 
       - name: Health check
         run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'ENDSSH'
           for i in $(seq 1 30); do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://${{ secrets.DEPLOY_HOST }}:1337/_health 2>/dev/null || echo "000")
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:1337/_health 2>/dev/null || echo "000")
             if [ "$STATUS" = "204" ] || [ "$STATUS" = "200" ]; then
               echo "Strapi is healthy (HTTP $STATUS)"
               exit 0
@@ -40,6 +42,7 @@ jobs:
           done
           echo "Health check failed after 5 minutes"
           exit 1
+          ENDSSH
 
       - name: Cleanup SSH key
         if: always()
