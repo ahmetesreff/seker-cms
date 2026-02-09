@@ -1,0 +1,7 @@
+.env
+node_modules/
+strapi/node_modules/
+strapi/.cache/
+strapi/dist/
+strapi/build/
+webhook-relay/node_modules/
